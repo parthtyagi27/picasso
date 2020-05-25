@@ -1,16 +1,19 @@
 import sys
 import os
+import time
 
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras.applications.vgg19 import preprocess_input
 from tensorflow.keras.models import Model
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import PIL
-import time
 
-content_img_path = os.getcwd() + "/" + sys.argv[1]
-style_img_path = os.getcwd() + "/" + sys.argv[2]
+# content_img_path = os.getcwd() + "/" + sys.argv[1]
+# style_img_path = os.getcwd() + "/" + sys.argv[2]
+
+content_img_path = os.path.abspath(sys.argv[1])
+style_img_path = os.path.abspath(sys.argv[2])
 
 print("Using TensorFlow: " + tf.__version__)
 print("Content Image Path = " + content_img_path)
@@ -179,5 +182,6 @@ for n in range(epochs):
         train_step(image)
     # plt.imshow(np.squeeze(image.read_value(), 0))
     # plt.title("Train step: {}".format(step))
+    print("Train step: {}".format(step))
     # plt.show()
 tensor_to_image(image).save("out.jpg")
