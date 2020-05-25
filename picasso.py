@@ -14,6 +14,7 @@ import PIL
 
 content_img_path = os.path.abspath(sys.argv[1])
 style_img_path = os.path.abspath(sys.argv[2])
+output_img_name = sys.argv[3]
 
 print("Using TensorFlow: " + tf.__version__)
 print("Content Image Path = " + content_img_path)
@@ -55,7 +56,7 @@ print(style_image.shape)
 vgg = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
 vgg.trainable = False
 
-content_layers = ['block4_conv1']
+content_layers = ['block5_conv2']
 
 
 style_layers = ['block1_conv1',
@@ -184,4 +185,4 @@ for n in range(epochs):
     # plt.title("Train step: {}".format(step))
     print("Train step: {}".format(step))
     # plt.show()
-tensor_to_image(image).save("out.jpg")
+tensor_to_image(image).save(output_img_name)
