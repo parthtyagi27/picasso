@@ -6,7 +6,7 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.keras.applications.vgg19 import preprocess_input
 from tensorflow.keras.models import Model
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import PIL
 
 # content_img_path = os.getcwd() + "/" + sys.argv[1]
@@ -64,6 +64,8 @@ style_layers = ['block1_conv1',
                 'block3_conv1',
                 'block4_conv1',
                 'block5_conv1']
+
+total_variation_weight = 20
 
 num_content_layers = len(content_layers)
 num_style_layers = len(style_layers)
@@ -140,10 +142,11 @@ def clip_0_1(image):
 opt = tf.optimizers.Adam(learning_rate=0.02, beta_1=0.99, epsilon=1e-1)
 
 # Weight parameters (can be tuned for different results)
-style_weight=1e-2
+
+style_weight=1e-4
 content_weight=1e4
 
-# Compute Style loss
+# Compute Style & Content loss
 
 def style_content_loss(outputs):
     style_outputs = outputs['style']
@@ -163,15 +166,13 @@ def train_step(image):
     with tf.GradientTape() as tape:
         outputs = extractor(image)
         loss = style_content_loss(outputs)
+        loss += total_variation_weight * tf.image.total_variation(image)
 
     grad = tape.gradient(loss, image)
     opt.apply_gradients([(grad, image)])
     image.assign(clip_0_1(image))
 
 # Train and test
-# train_step(image)
-# train_step(image)
-# train_step(image)
 
 epochs = 10
 steps_per_epoch = 100
